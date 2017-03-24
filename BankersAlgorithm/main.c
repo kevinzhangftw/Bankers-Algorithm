@@ -9,7 +9,7 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-int curr[5][5]={{2,0,1,1},
+int currentAllocTable[5][5]={{2,0,1,1},
     {0,1,2,1},
     {4,0,0,3},
     {0,2,1,0},
@@ -21,61 +21,47 @@ int max_claim[5][5]={{3,2,1,4},
     {1,5,3,0},
     {3,0,3,3}};
 
-int avl[5];
-int alloc[5] = {0, 0, 0, 0, 0};
-int max_res[5] = {8, 5, 9, 7};
+int inNeed[5];
+int allocationTotal[5] = {0, 0, 0, 0, 0};
+int maxResource[5] = {8, 5, 9, 7};
 int running[5] = {1,1,1,1,1};
 int count = 5;
 int i = 0;
 int j = 0;
 int exec = 0;
-int r = 4;
-int p = 5;
+int resources = 4;
+int processes = 5;
 bool safe = false;
 
+void printTotalSystemResource();
+void printCurrentlyAllocatedResouce();
+void printMaximumResource();
+void printAllocatedResources();
+void printResourcesinNeed();
 
 int main(int argc, const char * argv[]) {
+    printTotalSystemResource();
+    printCurrentlyAllocatedResouce();
+    printMaximumResource();
     
-    printf("\nThe Claim Vector is: ");
-    for (i = 0; i < r; i++)
-        printf("%d ", max_res[i]);
+    for (i = 0; i < processes; i++)
+        for (j = 0; j < resources; j++)
+            allocationTotal[j] += currentAllocTable[i][j];
     
-    printf("\nThe Allocated Resource Table:\n");
-    for (i = 0; i < p; i++) {
-        for (j = 0; j < r; j++)
-            printf("\t%d", curr[i][j]);
-        printf("\n");
-    }
+    printAllocatedResources();
     
-    printf("\nThe Maximum Claim Table:\n");
-    for (i = 0; i < p; i++) {
-        for (j = 0; j < r; j++)
-            printf("\t%d", max_claim[i][j]);
-        printf("\n");
-    }
+    for (i = 0; i < resources; i++)
+        inNeed[i] = maxResource[i] - allocationTotal[i];
     
-    for (i = 0; i < p; i++)
-        for (j = 0; j < r; j++)
-            alloc[j] += curr[i][j];
-    
-    printf("\nAllocated resources: ");
-    for (i = 0; i < r; i++)
-        printf("%d ", alloc[i]);
-    for (i = 0; i < r; i++)
-        avl[i] = max_res[i] - alloc[i];
-    
-    printf("\nAvailable resources: ");
-    for (i = 0; i < r; i++)
-        printf("%d ", avl[i]);
-    printf("\n");
+    printResourcesinNeed();
     
     while (count != 0) {
         safe = false;
-        for (i = 0; i < p; i++) {
+        for (i = 0; i < processes; i++) {
             if (running[i]) {
                 exec = 1;
-                for (j = 0; j < r; j++) {
-                    if (max_claim[i][j] - curr[i][j] > avl[j]) {
+                for (j = 0; j < resources; j++) {
+                    if (max_claim[i][j] - currentAllocTable[i][j] > inNeed[j]) {
                         exec = 0;
                         break;
                     }
@@ -86,8 +72,8 @@ int main(int argc, const char * argv[]) {
                     running[i] = 0;
                     count--;
                     safe = true;
-                    for (j = 0; j < r; j++)
-                        avl[j] += curr[i][j];
+                    for (j = 0; j < resources; j++)
+                        inNeed[j] += currentAllocTable[i][j];
                     break;
                 }
             }
@@ -96,15 +82,52 @@ int main(int argc, const char * argv[]) {
         if (!safe) {
             printf("\nThe processes are in unsafe state.");
             break;
+        }else{
+            printf("\nThe process is in safe state.");
         }
         
-        if (safe)
-            printf("\nThe process is in safe state.");
-        
-        printf("\nAvailable vector: ");
-        for (i = 0; i < r; i++)
-            printf("%d ", avl[i]);
+        printResourcesinNeed();
     }
     
     return 0;
+}
+
+
+void printTotalSystemResource(){
+    printf("\nThe total system resource is: ");
+    for (i = 0; i < resources; i++)
+        printf("%d ", maxResource[i]);
+    
+}
+
+void printCurrentlyAllocatedResouce(){
+    printf("\nCurrently Allocated Resource:\n");
+    for (i = 0; i < processes; i++) {
+        for (j = 0; j < resources; j++)
+            printf("\t%d", currentAllocTable[i][j]);
+        printf("\n");
+    }
+}
+
+void printMaximumResource(){
+    printf("\nMaximum Resource:\n");
+    for (i = 0; i < processes; i++) {
+        for (j = 0; j < resources; j++)
+            printf("\t%d", max_claim[i][j]);
+        printf("\n");
+    }
+}
+
+void printAllocatedResources(){
+    printf("\nAllocated resources: ");
+    for (i = 0; i < resources; i++)
+        printf("%d ", allocationTotal[i]);
+    
+}
+
+void printResourcesinNeed(){
+    printf("\nResources in need: ");
+    for (i = 0; i < resources; i++)
+        printf("%d ", inNeed[i]);
+    printf("\n");
 }
