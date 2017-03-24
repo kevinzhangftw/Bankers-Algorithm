@@ -9,58 +9,32 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+int curr[5][5]={{2,0,1,1},
+    {0,1,2,1},
+    {4,0,0,3},
+    {0,2,1,0},
+    {1,0,3,0}};
+
+int max_claim[5][5]={{3,2,1,4},
+    {0,2,5,2},
+    {5,1,0,5},
+    {1,5,3,0},
+    {3,0,3,3}};
+
+int avl[5];
+int alloc[5] = {0, 0, 0, 0, 0};
+int max_res[5] = {8, 5, 9, 7};
+int running[5] = {1,1,1,1,1};
+int count = 5;
+int i = 0;
+int j = 0;
+int exec = 0;
+int r = 4;
+int p = 5;
+bool safe = false;
+
 
 int main(int argc, const char * argv[]) {
-    int curr[5][5]={{2,0,1,1},
-                    {0,1,2,1},
-                    {4,0,0,3},
-                    {0,2,1,0},
-                    {1,0,3,0}};
-    
-    int max_claim[5][5]={{3,2,1,4},
-                        {0,2,5,2},
-                        {5,1,0,5},
-                        {1,5,3,0},
-                        {3,0,3,3}};
-    int avl[5];
-    int alloc[5] = {0, 0, 0, 0, 0};
-    int max_res[5] = {8, 5, 9, 7};
-    int running[5];
-    
-    int count = 0;
-    int i = 0;
-    int j = 0;
-    int exec = 0;
-    int r = 4;
-    int p = 5;
-    
-    bool safe = false;
-    
-//    printf("\nEnter the number of resources: ");
-//    scanf("%d", &r);
-//    
-//    printf("\nEnter the number of processes: ");
-//    scanf("%d", &p);
-    for (i = 0; i < p; i++) {
-        running[i] = 1;
-        count++;
-    }
-    
-//    printf("\nEnter Claim Vector: ");
-//    for (i = 0; i < r; i++)
-//        scanf("%d", &max_res[i]);
-    
-//    printf("\nEnter Allocated Resource Table: ");
-//    for (i = 0; i < p; i++) {
-//        for (j = 0; j < r; j++)
-//            scanf("%d", &curr[i][j]);
-//    }
-//    
-//    printf("\nEnter Maximum Claim table: ");
-//    for (i = 0; i < p; i++) {
-//        for (j = 0; j < r; j++)
-//            scanf("%d", &max_claim[i][j]);
-//    }
     
     printf("\nThe Claim Vector is: ");
     for (i = 0; i < r; i++)
